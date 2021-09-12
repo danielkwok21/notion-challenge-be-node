@@ -1,6 +1,7 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const moment = require('moment')
 const app = express()
 const port = 3000
 const { query } = require('./db')
@@ -27,17 +28,17 @@ app.get('/reviews', async (req, res) => {
 })
 
 app.post('/reviews', async (req, res) => {
-    const review = req.body
-    const q0 = `INSERT INTO Review (comment, stars) VALUES ("${review.comment}", ${review.stars})`
+    const { review } = req.body
+    const q0 = `INSERT INTO Review (comment, stars, createdAt) VALUES ("${review.comment}", ${review.stars}, ${moment().unix()})`
     const newReview = await query(q0).then(res => res[0])
     res.json({
         status: 200,
-        review: newReview
+        review: review
     })
 })
 
 app.get('/products', async (req, res) => {
-    const q0 = 'SELECT * FROM Product LIMIT'
+    const q0 = 'SELECT * FROM Product'
     const products = await query(q0)
     const product = products[0]
 
