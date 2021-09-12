@@ -26,9 +26,20 @@ app.get('/reviews', async (req, res) => {
     })
 })
 
+app.post('/reviews', async (req, res) => {
+    const review = req.body
+    const q0 = `INSERT INTO Review (comment, stars) VALUES ("${review.comment}", ${review.stars})`
+    const newReview = await query(q0).then(res => res[0])
+    res.json({
+        status: 200,
+        review: newReview
+    })
+})
+
 app.get('/products', async (req, res) => {
-    const q0 = 'SELECT * FROM Product LIMIT 1'
-    const product = await query(q0)
+    const q0 = 'SELECT * FROM Product LIMIT'
+    const products = await query(q0)
+    const product = products[0]
 
     res.json({
         status: 200,
