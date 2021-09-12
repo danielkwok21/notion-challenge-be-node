@@ -17,7 +17,7 @@ app.all('*', (req, res, next) => {
 });
 
 app.get('/reviews', async (req, res) => {
-    const q0 = 'SELECT * FROM REVIEWS'
+    const q0 = 'SELECT * FROM Review'
     const reviews = await query(q0)
 
     res.json({
@@ -27,7 +27,7 @@ app.get('/reviews', async (req, res) => {
 })
 
 app.get('/products', async (req, res) => {
-    const q0 = 'SELECT * FROM PRODUCTS LIMIT 1'
+    const q0 = 'SELECT * FROM Product LIMIT 1'
     const product = await query(q0)
 
     res.json({
