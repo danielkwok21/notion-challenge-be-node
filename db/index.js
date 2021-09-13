@@ -13,6 +13,8 @@ db.connect(function (err) {
     console.log("Connected!");
 });
 
+// const db = {}
+
 function query(queryString) {
     return new Promise((res, rej) => {
         return db.query(queryString, (err, result) => {

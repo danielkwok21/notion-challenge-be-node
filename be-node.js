@@ -17,6 +17,37 @@ app.all('*', (req, res, next) => {
     next();
 });
 
+
+function getSSEResponse() {
+    const SSE_REPONSE_FORMAT = `data: ${JSON.stringify(data)}\n\n`;
+    return SSE_REPONSE_FORMAT
+}
+/**SSE endpoint */
+let clients = []
+app.get('/sse/review_added', async (req, res) => {
+    const headers = {
+        'Content-Type': 'text/event-stream',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'no-cache'
+    };
+    res.writeHead(200, headers)
+
+    const clientId = Date.now()
+    const newClient = {
+        id: clientId,
+        response: res
+    }
+
+    clients.push(newClient)
+
+    req.on('close', () => {
+        console.log('connection closed')
+        clients = clients.filter(c => c.id !== clientId)
+    })
+})
+
+
+
 app.get('/reviews', async (req, res) => {
     const q0 = 'SELECT * FROM Review'
     const reviews = await query(q0)
@@ -30,7 +61,14 @@ app.get('/reviews', async (req, res) => {
 app.post('/reviews', async (req, res) => {
     const { review } = req.body
     const q0 = `INSERT INTO Review (comment, stars, createdAt) VALUES ("${review.comment}", ${review.stars}, ${moment().unix()})`
-    const newReview = await query(q0).then(res => res[0])
+    await query(q0).then(res => res[0])
+
+    
+    clients.map(client => {
+        client.response.write(getSSEResponse({ review }))
+    })
+
+
     res.json({
         status: 200,
         review: review
