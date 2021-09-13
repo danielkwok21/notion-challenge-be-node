@@ -47,14 +47,14 @@ app.get('/sse/review_added', async (req, res) => {
 })
 
 app.get('/clear_reviews', async (req, res) => {
-	const q0 'DELETE * FROM Review'
+	const q0 = 'DELETE FROM Review'
 	await query(q0)
 
 	res.json({
 	    status: 200,
 	})
 
-}
+})
 
 app.get('/reviews', async (req, res) => {
     const q0 = 'SELECT * FROM Review'
