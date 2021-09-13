@@ -31,7 +31,7 @@ app.get('/sse/review_added', async (req, res) => {
         'Cache-Control': 'no-cache'
     };
     res.writeHead(200, headers)
-
+    res.write(getSSEResponse({message: 'initial data'}))
     const clientId = Date.now()
     const newClient = {
         id: clientId,
@@ -63,11 +63,11 @@ app.post('/reviews', async (req, res) => {
     const q0 = `INSERT INTO Review (comment, stars, createdAt) VALUES ("${review.comment}", ${review.stars}, ${moment().unix()})`
     await query(q0).then(res => res[0])
 
-    
+    console.log(clients.map(c =>c.id))
+    console.log(review)
     clients.map(client => {
-        client.response.write(getSSEResponse({ review }))
+        client.response.write(getSSEResponse(review))
     })
-
 
     res.json({
         status: 200,
