@@ -18,7 +18,7 @@ app.all('*', (req, res, next) => {
 });
 
 
-function getSSEResponse() {
+function getSSEResponse(data) {
     const SSE_REPONSE_FORMAT = `data: ${JSON.stringify(data)}\n\n`;
     return SSE_REPONSE_FORMAT
 }
